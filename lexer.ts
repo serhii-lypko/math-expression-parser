@@ -1,5 +1,7 @@
 const { log } = console;
 
+import Token, { TokenType } from "./token.ts";
+
 /*
   *** Lexical tokenization ***
 
@@ -14,69 +16,10 @@ const { log } = console;
   - test runs
 */
 
-enum TokenType {
-  Literal,
-  Variable,
-  Operator,
-  Comma,
-  LeftParenthesis,
-  RightParenthesis,
-}
-
-enum OperatorAssoc {
-  Left,
-  Right,
-}
-
-var OperatorAssocMap = {
-  "^": OperatorAssoc.Right,
-  "*": OperatorAssoc.Left,
-  "/": OperatorAssoc.Left,
-  "+": OperatorAssoc.Left,
-  "-": OperatorAssoc.Left,
-};
-
-const OperatorPrecMap = {
-  "^": 4,
-  "*": 3,
-  "/": 3,
-  "+": 2,
-  "-": 2,
-};
-
-export class Token {
-  type: TokenType;
-  value: string;
-
-  constructor(type: TokenType, value: string) {
-    this.type = type;
-    this.value = value;
-  }
-
-  public static get operators(): Set<string> {
-    return new Set(Object.keys(OperatorAssocMap));
-  }
-
-  public get isOperator(): boolean {
-    return Token.operators.has(this.value);
-  }
-
-  get operatorAssoc(): OperatorAssoc {
-    if (!this.isOperator) {
-      throw new Error(`Given token ${this.value} is not an operator`);
-    }
-
-    return OperatorAssocMap[this.value];
-  }
-
-  get operatorPrec(): OperatorAssoc {
-    if (!this.isOperator) {
-      throw new Error(`Given token ${this.value} is not an operator`);
-    }
-
-    return OperatorPrecMap[this.value];
-  }
-}
+// TODO: implement via generators?
+// With Generators: Generators maintain state between yield calls without explicit tracking,
+// so you don’t need to manage counters or indices manually. This makes the code cleaner
+// and reduces the chance of errors related to state handling.
 
 enum BufferKind {
   Decimal,
@@ -125,7 +68,7 @@ class Buffer {
   }
 }
 
-export class Tokenizer {
+export class Lexer {
   input: string;
   tokens: Token[];
   cursor: number;
@@ -229,4 +172,4 @@ export class Tokenizer {
   }
 }
 
-export default Tokenizer;
+export default Lexer;
